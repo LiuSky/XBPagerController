@@ -23,6 +23,7 @@ public enum PagerBarStyle: Int {
     case cover
 }
 
+
 /// MARK - TabPagerBarLayout
 public class TabPagerBarLayout: NSObject {
     
@@ -30,46 +31,46 @@ public class TabPagerBarLayout: NSObject {
     public var barStyle: PagerBarStyle = PagerBarStyle.progressElastic {
         didSet {
             
-            if barStyle == oldValue {
+            guard barStyle != oldValue else {
                 return
             }
             
-            if barStyle == .cover {
+            if oldValue == .cover {
                 self.progressBorderWidth = 0
                 self.progressBorderColor = nil
             }
             
             switch barStyle {
             case .progress:
-                self.progressWidth = 0
-                self.progressHorEdging = 6
-                self.progressVerEdging = 0
-                self.progressHeight = 2
+                progressWidth = 0
+                progressHorEdging = 6
+                progressVerEdging = 0
+                progressHeight = 2
             case .progressBounce, .progressElastic:
-                self.progressWidth = 30
-                self.progressVerEdging = 0
-                self.progressHorEdging = 0
-                self.progressHeight = 2
+                progressWidth = 30
+                progressVerEdging = 0
+                progressHorEdging = 0
+                progressHeight = 2
             case .cover:
-                self.progressWidth = 0
-                self.progressHorEdging = -self.progressHeight/4
-                self.progressVerEdging = 3
+                progressWidth = 0
+                progressHorEdging = -progressHeight/4
+                progressVerEdging = 3
             default:
                 break
             }
             
             self.pagerTabBar.progressView.isHidden = barStyle == .none
             if barStyle == .cover {
-                self.progressRadius = 0
-                self.pagerTabBar.progressView.layer.zPosition = -1
-                self.pagerTabBar.progressView.removeFromSuperview()
-                self.pagerTabBar.collectionView.insertSubview(self.pagerTabBar.progressView, at: 0)
+                progressRadius = 0
+                pagerTabBar.progressView.layer.zPosition = -1
+                pagerTabBar.progressView.removeFromSuperview()
+                pagerTabBar.collectionView.insertSubview(pagerTabBar.progressView, at: 0)
             } else {
-                self.progressRadius = self.progressHeight/2
-                if self.pagerTabBar.progressView.layer.zPosition == -1 {
-                    self.pagerTabBar.progressView.layer.zPosition = 0
-                    self.pagerTabBar.progressView.removeFromSuperview()
-                    self.pagerTabBar.collectionView.addSubview(self.pagerTabBar.progressView)
+                progressRadius = progressHeight/2
+                if pagerTabBar.progressView.layer.zPosition == -1 {
+                    pagerTabBar.progressView.layer.zPosition = 0
+                    pagerTabBar.progressView.removeFromSuperview()
+                    pagerTabBar.collectionView.addSubview(pagerTabBar.progressView)
                 }
             }
         }
@@ -81,11 +82,11 @@ public class TabPagerBarLayout: NSObject {
         
         get {
             
-            if !(_sectionInset == .zero) || self.barStyle != .cover {
+            if !(_sectionInset == .zero) || barStyle != .cover {
                 return _sectionInset
             }
             
-            if self.barStyle == .cover && self.adjustContentCellsCenter {
+            if self.barStyle == .cover && adjustContentCellsCenter {
                 return _sectionInset
             }
             
@@ -102,11 +103,11 @@ public class TabPagerBarLayout: NSObject {
     public var progressHeight: CGFloat = 2 {
         didSet {
             
-            var frame = self.pagerTabBar.progressView.frame
-            let height = self.pagerTabBar.collectionView.bounds.height
-            frame.origin.y = self.barStyle == .cover ? (height - self.progressHeight)/2 : (height - self.progressHeight - self.progressVerEdging)
+            var frame = pagerTabBar.progressView.frame
+            let height = pagerTabBar.collectionView.bounds.height
+            frame.origin.y = barStyle == .cover ? (height - progressHeight)/2 : (height - progressHeight - progressVerEdging)
             frame.size.height = progressHeight
-            self.pagerTabBar.progressView.frame = frame
+            pagerTabBar.progressView.frame = frame
         }
     }
     
@@ -116,31 +117,31 @@ public class TabPagerBarLayout: NSObject {
     /// 进度条颜色
     public var progressColor: UIColor = UIColor.clear {
         didSet {
-            self.pagerTabBar.progressView.backgroundColor = progressColor
+            pagerTabBar.progressView.backgroundColor = progressColor
         }
     }
     
     /// 进度条半径
     public var progressRadius: CGFloat = 0 {
         didSet {
-           self.pagerTabBar.progressView.layer.cornerRadius = progressRadius
+           pagerTabBar.progressView.layer.cornerRadius = progressRadius
         }
     }
     
     /// 进度条边框宽度
     public var progressBorderWidth: CGFloat = 0 {
         didSet {
-            self.pagerTabBar.progressView.layer.borderWidth = progressBorderWidth
+            pagerTabBar.progressView.layer.borderWidth = progressBorderWidth
         }
     }
     
     /// 进度条边框颜色
     public var progressBorderColor: UIColor? {
         didSet {
-            if self.progressColor == UIColor.clear {
-                self.pagerTabBar.progressView.backgroundColor = UIColor.clear
+            if progressColor == UIColor.clear {
+                pagerTabBar.progressView.backgroundColor = UIColor.clear
             }
-            self.pagerTabBar.progressView.layer.borderColor = progressBorderColor?.cgColor
+            pagerTabBar.progressView.layer.borderColor = progressBorderColor?.cgColor
         }
     }
     
@@ -166,15 +167,14 @@ public class TabPagerBarLayout: NSObject {
         didSet {
             
             let change = adjustContentCellsCenter != oldValue
-            if change && self.pagerTabBar.superview != nil {
-                self.pagerTabBar.setNeedsLayout()
+            if change && pagerTabBar.superview != nil {
+                pagerTabBar.setNeedsLayout()
             }
         }
     }
     
     
-    // TabPagerBarTabPagerCellProtocol -> cell's label
-    
+    // TabPagerCellProtocol -> cell's label
     /// 默认文本字体
     public var normalTextFont: UIFont = UIFont.systemFont(ofSize: 15, weight: UIFont.Weight.regular)
     
@@ -227,47 +227,50 @@ extension TabPagerBarLayout {
     /// 立即执行刷行布局
     public func layoutIfNeed() {
         
-        let collectionLayout = self.pagerTabBar.collectionView.collectionViewLayout as! UICollectionViewFlowLayout
-        collectionLayout.minimumLineSpacing = self.cellSpacing
-        collectionLayout.minimumInteritemSpacing = self.cellSpacing
-        self.selectFontScale = self.normalTextFont.pointSize/self.selectedTextFont.pointSize
-        collectionLayout.sectionInset = self.sectionInset
+        let collectionLayout = pagerTabBar.collectionView.collectionViewLayout as! UICollectionViewFlowLayout
+        collectionLayout.minimumLineSpacing = cellSpacing
+        collectionLayout.minimumInteritemSpacing = cellSpacing
+        selectFontScale = normalTextFont.pointSize/selectedTextFont.pointSize
+        collectionLayout.sectionInset = sectionInset
     }
     
     
     /// 无效的布局
     public func invalidateLayout() {
-        self.pagerTabBar.collectionView.collectionViewLayout.invalidateLayout()
+        pagerTabBar.collectionView.collectionViewLayout.invalidateLayout()
     }
     
     
     /// 布局视图
     public func layoutSubViews() {
         
-        if self.pagerTabBar.frame.isEmpty {
+        guard !pagerTabBar.frame.isEmpty else {
             return
         }
         
         if barStyle == .cover {
-             self.progressHeight = self.pagerTabBar.collectionView.frame.height - self.progressVerEdging * 2
-             self.progressRadius = self.progressRadius > 0 ? self.progressRadius : self.progressHeight / 2
+             progressHeight = pagerTabBar.collectionView.frame.height - progressVerEdging * 2
+             progressRadius = progressRadius > 0 ? progressRadius : progressHeight / 2
         }
-        self.setUnderLineFrameWith(self.pagerTabBar.curIndex, animated: false)
+        setUnderLineFrameWith(pagerTabBar.curIndex, animated: false)
     }
     
     /// 调整内容单元格在栏中的中心位置
     public func adjustContentCellsCenterInBar() {
         
-        if adjustContentCellsCenter == false || self.pagerTabBar.superview == nil {
+        guard adjustContentCellsCenter != false,
+              let _ = pagerTabBar.superview else {
             return
         }
+        
         
         let frame = self.pagerTabBar.collectionView.frame
-        if frame.isEmpty {
+        guard !frame.isEmpty else {
             return
         }
         
-        let collectionLayout = self.pagerTabBar.collectionView.collectionViewLayout as! UICollectionViewFlowLayout
+        
+        let collectionLayout = pagerTabBar.collectionView.collectionViewLayout as! UICollectionViewFlowLayout
         let contentSize = collectionLayout.collectionViewContentSize
         guard let layoutAttribulte = collectionLayout.layoutAttributesForElements(in: CGRect(x: 0, y: 0, width: max(contentSize.width, frame.width), height: max(contentSize.height, frame.height))),
             layoutAttribulte.count == 0 else {
@@ -278,13 +281,13 @@ extension TabPagerBarLayout {
         let lastAttribute = layoutAttribulte.last
         let left = firstAttribute?.frame.minX ?? 0
         let right = lastAttribute?.frame.maxX ?? 0
-        if right - left > self.pagerTabBar.frame.width {
-           return
+        if right - left > pagerTabBar.frame.width {
+            return
         }
         
-        let space = (self.pagerTabBar.frame.width - (right - left))/2
-        self.sectionInset = UIEdgeInsets(top: _sectionInset.top, left: space, bottom: _sectionInset.bottom, right: space)
-        collectionLayout.sectionInset  = self.sectionInset
+        let space = (pagerTabBar.frame.width - (right - left))/2
+        sectionInset = UIEdgeInsets(top: _sectionInset.top, left: space, bottom: _sectionInset.bottom, right: space)
+        collectionLayout.sectionInset  = sectionInset
     }
     
     
@@ -297,7 +300,7 @@ extension TabPagerBarLayout {
     ///   - animate: 是否动画
     public func transition(fromCell: TabPagerCellProtocol?, toCell: TabPagerCellProtocol?, animate: Bool) {
         
-        guard self.pagerTabBar.countOfItems != 0 else {
+        guard pagerTabBar.countOfItems != 0 else {
             return
         }
         
@@ -317,9 +320,7 @@ extension TabPagerBarLayout {
         }
         
         if animate {
-            
-            UIView.animate(withDuration: self.animateDuration, animations: animateBlock)
-            
+            UIView.animate(withDuration: animateDuration, animations: animateBlock)
         } else {
             animateBlock()
         }
@@ -334,11 +335,12 @@ extension TabPagerBarLayout {
     ///   - progress: progress
     public func transition(fromCell: TabPagerCellProtocol?, toCell: TabPagerCellProtocol?, progress: CGFloat) {
         
-        if self.pagerTabBar.countOfItems == 0 || self.textColorProgressEnable == false {
+        guard pagerTabBar.countOfItems != 0,
+              textColorProgressEnable != false else {
             return
         }
         
-        let currentTransform = (1.0 - self.selectFontScale) * progress
+        let currentTransform = (1.0 - selectFontScale) * progress
         fromCell?.transform = CGAffineTransform(scaleX: 1.0 - currentTransform, y: 1.0 - currentTransform)
         toCell?.transform = CGAffineTransform(scaleX: selectFontScale + currentTransform, y: selectFontScale + currentTransform)
         if normalTextColor == selectedTextColor {
@@ -346,10 +348,10 @@ extension TabPagerBarLayout {
         }
         
         var narR: CGFloat = 0, narG: CGFloat = 0, narB: CGFloat = 0, narA: CGFloat = 1
-        self.normalTextColor.getRed(&narR, green: &narG, blue: &narB, alpha: &narA)
+        normalTextColor.getRed(&narR, green: &narG, blue: &narB, alpha: &narA)
 
         var selR: CGFloat = 0, selG: CGFloat = 0, selB: CGFloat = 0, selA: CGFloat = 1
-        self.selectedTextColor.getRed(&selR, green: &selG, blue: &selB, alpha: &selA)
+        selectedTextColor.getRed(&selR, green: &selG, blue: &selB, alpha: &selA)
 
         let detalR: CGFloat = narR - selR, detalG: CGFloat = narG - selG, detalB: CGFloat = narB - selB, detalA: CGFloat = narA - selA
         fromCell?.titleLabel.textColor = UIColor(red: selR + detalR * progress, green: selG + detalG * progress, blue: selB + detalB * progress, alpha: selA + detalA * progress)
@@ -364,15 +366,17 @@ extension TabPagerBarLayout {
     ///   - animated: animated
     public func setUnderLineFrameWith(_ index: Int, animated: Bool) {
         
-        let progressView = self.pagerTabBar.progressView
-        if progressView.isHidden || self.pagerTabBar.countOfItems == 0 {
+        let progressView = pagerTabBar.progressView
+        guard !progressView.isHidden,
+              pagerTabBar.countOfItems != 0 else {
             return
         }
         
+        
         let cellFrame = self.cellFrame(with: index)
-        let progressHorEdging = self.progressWidth > 0 ? (cellFrame.size.width - self.progressWidth)/2 : self.progressHorEdging
+        let progressHorEdging = progressWidth > 0 ? (cellFrame.size.width - progressWidth)/2 : self.progressHorEdging
         let progressX = cellFrame.origin.x + progressHorEdging
-        let progressY = self.barStyle == .cover ? (cellFrame.size.height - self.progressHeight)/2 :(cellFrame.size.height - progressHeight - progressVerEdging)
+        let progressY = barStyle == .cover ? (cellFrame.size.height - progressHeight)/2 :(cellFrame.size.height - progressHeight - progressVerEdging)
         let width = cellFrame.size.width - 2 * progressHorEdging
     
         if animated {
@@ -400,7 +404,8 @@ extension TabPagerBarLayout {
     public func setUnderLineFrameWithfromIndex(_ fromIndex: Int, to toIndex: Int, progress: CGFloat) {
         
         let progressView = pagerTabBar.progressView
-        if progressView.isHidden || pagerTabBar.countOfItems == 0 {
+        guard !progressView.isHidden,
+              pagerTabBar.countOfItems != 0 else {
             return
         }
         
@@ -452,16 +457,16 @@ extension TabPagerBarLayout {
                 
                 if (progress <= 0.5) {
                     
-                    progressX = fromCellFrame.origin.x + progressFromEdging - (toCellFrame.size.width-(toCellFrame.size.width-2*progressToEdging)/2-progressToEdging+progressFromEdging+cellSpacing)*2*progress
-                    width = fromCellFrame.maxX - (fromCellFrame.size.width-2*progressFromEdging)*progress - progressFromEdging - progressX
+                    progressX = fromCellFrame.origin.x + progressFromEdging - (toCellFrame.size.width - (toCellFrame.size.width - 2 * progressToEdging)/2 - progressToEdging + progressFromEdging + cellSpacing) * 2 * progress
+                    width = fromCellFrame.maxX - (fromCellFrame.size.width - 2 * progressFromEdging) * progress - progressFromEdging - progressX
                 } else {
-                    progressX = toCellFrame.origin.x + progressToEdging+(toCellFrame.size.width-2*progressToEdging)*(1-progress);
-                    width = (fromCellFrame.size.width-progressFromEdging+progressToEdging-(fromCellFrame.size.width-2*progressFromEdging)/2 + cellSpacing)*(1-progress)*2 + toCellFrame.size.width - 2*progressToEdging - (toCellFrame.size.width-2*progressToEdging)*(1-progress)
+                    progressX = toCellFrame.origin.x + progressToEdging + (toCellFrame.size.width - 2 * progressToEdging) * (1 - progress);
+                    width = (fromCellFrame.size.width - progressFromEdging + progressToEdging - (fromCellFrame.size.width - 2 * progressFromEdging)/2 + cellSpacing) * (1 - progress) * 2 + toCellFrame.size.width - 2 * progressToEdging - (toCellFrame.size.width - 2 * progressToEdging) * (1 - progress)
                 }
             }
         default:
-            progressX = (toCellFrame.origin.x+progressToEdging-(fromCellFrame.origin.x+progressFromEdging))*progress+fromCellFrame.origin.x+progressFromEdging
-            width = (toCellFrame.size.width-2*progressToEdging)*progress + (fromCellFrame.size.width-2*progressFromEdging)*(1-progress)
+            progressX = (toCellFrame.origin.x + progressToEdging - (fromCellFrame.origin.x + progressFromEdging)) * progress + fromCellFrame.origin.x + progressFromEdging
+            width = (toCellFrame.size.width - 2 * progressToEdging) * progress + (fromCellFrame.size.width - 2 * progressFromEdging) * (1 - progress)
         }
         
         progressView.frame = CGRect(x: progressX,
