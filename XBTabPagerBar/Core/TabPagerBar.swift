@@ -16,7 +16,7 @@ public protocol TabPagerBarDataSource: NSObjectProtocol {
     func numberOfItemsInPagerTabBar() -> Int
     
     /// 单元格协议
-    func pagerTabBar(_ pagerTabBar: TabPagerBar, cellForItemAt index: Int) -> CellProtocol
+    func pagerTabBar(_ pagerTabBar: TabPagerBar, cellForItemAt index: Int) -> TabPagerCellProtocol
 }
 
 
@@ -34,10 +34,10 @@ public protocol TabPagerBarDataSource: NSObjectProtocol {
     @objc optional func pagerTabBar(_ pagerTabBar: TabPagerBar, didSelectItemAt index: Int)
     
     /// 将旧单元格转换为具有动画效果的新单元格
-    @objc optional func pagerTabBar(_ pagerTabBar: TabPagerBar, transitionFromeCell fromCell: CellProtocol?, toCell: CellProtocol?, animated: Bool)
+    @objc optional func pagerTabBar(_ pagerTabBar: TabPagerBar, transitionFromeCell fromCell: TabPagerCellProtocol?, toCell: TabPagerCellProtocol?, animated: Bool)
 
     /// 随着进度从一个单元格过渡到另一个单元格
-    @objc optional func pagerTabBar(_ pagerTabBar: TabPagerBar, transitionFromeCell fromCell: CellProtocol?, toCell: CellProtocol?, progress: CGFloat)
+    @objc optional func pagerTabBar(_ pagerTabBar: TabPagerBar, transitionFromeCell fromCell: TabPagerCellProtocol?, toCell: TabPagerCellProtocol?, progress: CGFloat)
 }
 
 
@@ -240,10 +240,10 @@ extension TabPagerBar {
     /// - Parameters:
     ///   - identifier: identifier
     ///   - index: index
-    /// - Returns: CellProtocol
-    public func dequeueReusableCell(withReuseIdentifier identifier: String, for index: Int) -> CellProtocol {
+    /// - Returns: TabPagerCellProtocol
+    public func dequeueReusableCell(withReuseIdentifier identifier: String, for index: Int) -> TabPagerCellProtocol {
         
-        let cell = self.collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: IndexPath(item: index, section: 0)) as! CellProtocol
+        let cell = self.collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: IndexPath(item: index, section: 0)) as! TabPagerCellProtocol
         return cell
     }
     
@@ -353,13 +353,13 @@ extension TabPagerBar {
     ///
     /// - Parameter index: index
     /// - Returns: <#return value description#>
-    public func cell(for index: Int) -> CellProtocol? {
+    public func cell(for index: Int) -> TabPagerCellProtocol? {
         
         if index >= self.countOfItems {
             return nil
         }
         
-        return self.collectionView.cellForItem(at: IndexPath(item: index, section: 0)) as? CellProtocol
+        return self.collectionView.cellForItem(at: IndexPath(item: index, section: 0)) as? TabPagerCellProtocol
     }
 }
 

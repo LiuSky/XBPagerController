@@ -50,7 +50,7 @@ extension ViewController: TabPagerBarDataSource {
         return 15
     }
     
-    func pagerTabBar(_ pagerTabBar: TabPagerBar, cellForItemAt index: Int) -> CellProtocol {
+    func pagerTabBar(_ pagerTabBar: TabPagerBar, cellForItemAt index: Int) -> TabPagerCellProtocol {
         let cell = pagerTabBar.dequeueReusableCell(withReuseIdentifier: TabPagerBarCell.cellIdentifier, for: index)
         cell.titleLabel.text = "\(index)111"
         cell.titleLabel.textColor = UIColor.black

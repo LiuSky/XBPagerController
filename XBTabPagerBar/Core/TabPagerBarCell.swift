@@ -9,18 +9,18 @@
 import UIKit
 
 
-public typealias CellProtocol = UICollectionViewCell & TabPagerBarCellProtocol
+public typealias TabPagerCellProtocol = UICollectionViewCell & TabPagerBarTabPagerCellProtocol
 
 
-/// MARK - TabPagerBarCellProtocol
-@objc public protocol TabPagerBarCellProtocol: NSObjectProtocol {
+/// MARK - TabPagerBarTabPagerCellProtocol
+@objc public protocol TabPagerBarTabPagerCellProtocol: NSObjectProtocol {
     
     var titleLabel: UILabel { get }
 }
 
 
 /// MARK - TabPagerBarCell
-public class TabPagerBarCell: CellProtocol {
+public class TabPagerBarCell: TabPagerCellProtocol {
     
     /// 唯一标示
     public static var cellIdentifier = "XBTabPagerBarCell"

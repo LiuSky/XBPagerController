@@ -173,7 +173,7 @@ public class TabPagerBarLayout: NSObject {
     }
     
     
-    // TabPagerBarCellProtocol -> cell's label
+    // TabPagerBarTabPagerCellProtocol -> cell's label
     
     /// 默认文本字体
     public var normalTextFont: UIFont = UIFont.systemFont(ofSize: 15, weight: UIFont.Weight.regular)
@@ -295,7 +295,7 @@ extension TabPagerBarLayout {
     ///   - fromCell: fromCell
     ///   - toCell: toCell
     ///   - animate: 是否动画
-    public func transition(fromCell: CellProtocol?, toCell: CellProtocol?, animate: Bool) {
+    public func transition(fromCell: TabPagerCellProtocol?, toCell: TabPagerCellProtocol?, animate: Bool) {
         
         guard self.pagerTabBar.countOfItems != 0 else {
             return
@@ -332,7 +332,7 @@ extension TabPagerBarLayout {
     ///   - fromCell: fromCell
     ///   - toCell: toCell
     ///   - progress: progress
-    public func transition(fromCell: CellProtocol?, toCell: CellProtocol?, progress: CGFloat) {
+    public func transition(fromCell: TabPagerCellProtocol?, toCell: TabPagerCellProtocol?, progress: CGFloat) {
         
         if self.pagerTabBar.countOfItems == 0 || self.textColorProgressEnable == false {
             return
