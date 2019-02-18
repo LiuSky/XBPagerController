@@ -17,6 +17,8 @@
 		33364073221A521900B83E43 /* TabPagerBarLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33364072221A521900B83E43 /* TabPagerBarLayout.swift */; };
 		33364075221A523D00B83E43 /* TabPagerBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33364074221A523D00B83E43 /* TabPagerBar.swift */; };
 		33364077221A52AC00B83E43 /* TabPagerBarDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33364076221A52AC00B83E43 /* TabPagerBarDemo.swift */; };
+		3336407A221A61D900B83E43 /* PagerViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33364079221A61D900B83E43 /* PagerViewLayout.swift */; };
+		3336407C221A858B00B83E43 /* PagerAutoPurgeCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3336407B221A858B00B83E43 /* PagerAutoPurgeCache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +46,8 @@
 		33364072221A521900B83E43 /* TabPagerBarLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabPagerBarLayout.swift; sourceTree = "<group>"; };
 		33364074221A523D00B83E43 /* TabPagerBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabPagerBar.swift; sourceTree = "<group>"; };
 		33364076221A52AC00B83E43 /* TabPagerBarDemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabPagerBarDemo.swift; sourceTree = "<group>"; };
+		33364079221A61D900B83E43 /* PagerViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagerViewLayout.swift; sourceTree = "<group>"; };
+		3336407B221A858B00B83E43 /* PagerAutoPurgeCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagerAutoPurgeCache.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,11 +113,21 @@
 		3336406F221A51E800B83E43 /* Classas */ = {
 			isa = PBXGroup;
 			children = (
+				33364079221A61D900B83E43 /* PagerViewLayout.swift */,
+				3336407B221A858B00B83E43 /* PagerAutoPurgeCache.swift */,
+				33364078221A554D00B83E43 /* TabPager */,
+			);
+			path = Classas;
+			sourceTree = "<group>";
+		};
+		33364078221A554D00B83E43 /* TabPager */ = {
+			isa = PBXGroup;
+			children = (
 				33364070221A520700B83E43 /* TabPagerBarCell.swift */,
 				33364072221A521900B83E43 /* TabPagerBarLayout.swift */,
 				33364074221A523D00B83E43 /* TabPagerBar.swift */,
 			);
-			path = Classas;
+			path = TabPager;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -222,7 +236,9 @@
 				33364075221A523D00B83E43 /* TabPagerBar.swift in Sources */,
 				33364071221A520700B83E43 /* TabPagerBarCell.swift in Sources */,
 				33364050221A51E200B83E43 /* AppDelegate.swift in Sources */,
+				3336407A221A61D900B83E43 /* PagerViewLayout.swift in Sources */,
 				33364073221A521900B83E43 /* TabPagerBarLayout.swift in Sources */,
+				3336407C221A858B00B83E43 /* PagerAutoPurgeCache.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
