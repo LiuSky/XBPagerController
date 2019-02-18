@@ -1,8 +1,8 @@
 //
-//  XBTabPagerBarLayout.swift
-//  XBTabPagerBar
+//  TabPagerBarLayout.swift
+//  XBPagerController
 //
-//  Created by xiaobin liu on 2019/2/14.
+//  Created by xiaobin liu on 2019/2/18.
 //  Copyright © 2019 Sky. All rights reserved.
 //
 
@@ -124,7 +124,7 @@ public class TabPagerBarLayout: NSObject {
     /// 进度条半径
     public var progressRadius: CGFloat = 0 {
         didSet {
-           pagerTabBar.progressView.layer.cornerRadius = progressRadius
+            pagerTabBar.progressView.layer.cornerRadius = progressRadius
         }
     }
     
@@ -249,8 +249,8 @@ extension TabPagerBarLayout {
         }
         
         if barStyle == .cover {
-             progressHeight = pagerTabBar.collectionView.frame.height - progressVerEdging * 2
-             progressRadius = progressRadius > 0 ? progressRadius : progressHeight / 2
+            progressHeight = pagerTabBar.collectionView.frame.height - progressVerEdging * 2
+            progressRadius = progressRadius > 0 ? progressRadius : progressHeight / 2
         }
         setUnderLineFrameWith(pagerTabBar.curIndex, animated: false)
     }
@@ -259,8 +259,8 @@ extension TabPagerBarLayout {
     public func adjustContentCellsCenterInBar() {
         
         guard adjustContentCellsCenter != false,
-              let _ = pagerTabBar.superview else {
-            return
+            let _ = pagerTabBar.superview else {
+                return
         }
         
         
@@ -274,7 +274,7 @@ extension TabPagerBarLayout {
         let contentSize = collectionLayout.collectionViewContentSize
         guard let layoutAttribulte = collectionLayout.layoutAttributesForElements(in: CGRect(x: 0, y: 0, width: max(contentSize.width, frame.width), height: max(contentSize.height, frame.height))),
             layoutAttribulte.count == 0 else {
-            return
+                return
         }
         
         let firstAttribute = layoutAttribulte.first
@@ -336,8 +336,8 @@ extension TabPagerBarLayout {
     public func transition(fromCell: TabPagerCellProtocol?, toCell: TabPagerCellProtocol?, progress: CGFloat) {
         
         guard pagerTabBar.countOfItems != 0,
-              textColorProgressEnable != false else {
-            return
+            textColorProgressEnable != false else {
+                return
         }
         
         let currentTransform = (1.0 - selectFontScale) * progress
@@ -349,10 +349,10 @@ extension TabPagerBarLayout {
         
         var narR: CGFloat = 0, narG: CGFloat = 0, narB: CGFloat = 0, narA: CGFloat = 1
         normalTextColor.getRed(&narR, green: &narG, blue: &narB, alpha: &narA)
-
+        
         var selR: CGFloat = 0, selG: CGFloat = 0, selB: CGFloat = 0, selA: CGFloat = 1
         selectedTextColor.getRed(&selR, green: &selG, blue: &selB, alpha: &selA)
-
+        
         let detalR: CGFloat = narR - selR, detalG: CGFloat = narG - selG, detalB: CGFloat = narB - selB, detalA: CGFloat = narA - selA
         fromCell?.titleLabel.textColor = UIColor(red: selR + detalR * progress, green: selG + detalG * progress, blue: selB + detalB * progress, alpha: selA + detalA * progress)
         toCell?.titleLabel.textColor = UIColor(red: narR - detalR * progress, green: narG - detalG * progress, blue: narB - detalB * progress, alpha: narA - detalA * progress)
@@ -368,8 +368,8 @@ extension TabPagerBarLayout {
         
         let progressView = pagerTabBar.progressView
         guard !progressView.isHidden,
-              pagerTabBar.countOfItems != 0 else {
-            return
+            pagerTabBar.countOfItems != 0 else {
+                return
         }
         
         
@@ -378,7 +378,7 @@ extension TabPagerBarLayout {
         let progressX = cellFrame.origin.x + progressHorEdging
         let progressY = barStyle == .cover ? (cellFrame.size.height - progressHeight)/2 :(cellFrame.size.height - progressHeight - progressVerEdging)
         let width = cellFrame.size.width - 2 * progressHorEdging
-    
+        
         if animated {
             UIView.animate(withDuration: animateDuration) {
                 progressView.frame = CGRect(x: progressX,
@@ -405,8 +405,8 @@ extension TabPagerBarLayout {
         
         let progressView = pagerTabBar.progressView
         guard !progressView.isHidden,
-              pagerTabBar.countOfItems != 0 else {
-            return
+            pagerTabBar.countOfItems != 0 else {
+                return
         }
         
         let fromCellFrame = self.cellFrame(with: fromIndex)
@@ -446,13 +446,13 @@ extension TabPagerBarLayout {
         case .progressElastic:
             
             if fromCellFrame.origin.x < toCellFrame.origin.x {
-                    if progress <= 0.5 {
-                        progressX = fromCellFrame.origin.x + progressFromEdging + (fromCellFrame.size.width - 2 * progressFromEdging) * progress
-                        width = (toCellFrame.size.width - progressToEdging+progressFromEdging + cellSpacing) * 2 * progress - (toCellFrame.size.width - 2 * progressToEdging) * progress + fromCellFrame.size.width - 2 * progressFromEdging-(fromCellFrame.size.width - 2 * progressFromEdging) * progress
-                    } else  {
-                        progressX = fromCellFrame.origin.x + progressFromEdging + (fromCellFrame.size.width - 2 * progressFromEdging) * 0.5 + (fromCellFrame.size.width - progressFromEdging - (fromCellFrame.size.width - 2 * progressFromEdging) * 0.5 + progressToEdging + cellSpacing) * (progress - 0.5) * 2
-                        width = toCellFrame.maxX - progressToEdging - progressX - (toCellFrame.size.width - 2 * progressToEdging) * (1 - progress)
-                    }
+                if progress <= 0.5 {
+                    progressX = fromCellFrame.origin.x + progressFromEdging + (fromCellFrame.size.width - 2 * progressFromEdging) * progress
+                    width = (toCellFrame.size.width - progressToEdging+progressFromEdging + cellSpacing) * 2 * progress - (toCellFrame.size.width - 2 * progressToEdging) * progress + fromCellFrame.size.width - 2 * progressFromEdging-(fromCellFrame.size.width - 2 * progressFromEdging) * progress
+                } else  {
+                    progressX = fromCellFrame.origin.x + progressFromEdging + (fromCellFrame.size.width - 2 * progressFromEdging) * 0.5 + (fromCellFrame.size.width - progressFromEdging - (fromCellFrame.size.width - 2 * progressFromEdging) * 0.5 + progressToEdging + cellSpacing) * (progress - 0.5) * 2
+                    width = toCellFrame.maxX - progressToEdging - progressX - (toCellFrame.size.width - 2 * progressToEdging) * (1 - progress)
+                }
             } else {
                 
                 if (progress <= 0.5) {
@@ -474,6 +474,6 @@ extension TabPagerBarLayout {
                                     width: width,
                                     height: progressHeight)
     }
-
+    
 }
 

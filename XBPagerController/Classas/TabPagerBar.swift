@@ -1,17 +1,16 @@
 //
 //  TabPagerBar.swift
-//  XBTabPagerBar
+//  XBPagerController
 //
-//  Created by xiaobin liu on 2019/2/14.
+//  Created by xiaobin liu on 2019/2/18.
 //  Copyright © 2019 Sky. All rights reserved.
 //
-
 
 import UIKit
 
 /// MARK - 数据源协议
 public protocol TabPagerBarDataSource: NSObjectProtocol {
-
+    
     /// 单元格数量
     func numberOfItemsInPagerTabBar() -> Int
     
@@ -35,7 +34,7 @@ public protocol TabPagerBarDataSource: NSObjectProtocol {
     
     /// 将旧单元格转换为具有动画效果的新单元格
     @objc optional func pagerTabBar(_ pagerTabBar: TabPagerBar, transitionFromeCell fromCell: TabPagerCellProtocol?, toCell: TabPagerCellProtocol?, animated: Bool)
-
+    
     /// 随着进度从一个单元格过渡到另一个单元格
     @objc optional func pagerTabBar(_ pagerTabBar: TabPagerBar, transitionFromeCell fromCell: TabPagerCellProtocol?, toCell: TabPagerCellProtocol?, progress: CGFloat)
 }
@@ -89,7 +88,7 @@ public class TabPagerBar: UIView {
         temCollectionView.showsHorizontalScrollIndicator = false
         temCollectionView.backgroundColor = UIColor.clear
         if #available(iOS 10.0, *) {
-           temCollectionView.isPrefetchingEnabled = false
+            temCollectionView.isPrefetchingEnabled = false
         }
         temCollectionView.dataSource = self
         temCollectionView.delegate = self
@@ -161,7 +160,7 @@ public class TabPagerBar: UIView {
         if frame.size.height > 0 && frame.size.width > 0 {
             self.layout.adjustContentCellsCenterInBar()
         }
-    
+        
         self.isFirstLayout = false
         self.layout.layoutSubViews()
     }
@@ -175,7 +174,7 @@ extension TabPagerBar {
     ///
     /// - Parameter progressView: <#progressView description#>
     public func setProgressView(_ progressView: UIView) {
-
+        
         guard self.progressView != progressView else {
             return
         }
@@ -343,8 +342,8 @@ extension TabPagerBar {
     public func cellFrame(with index: Int) -> CGRect {
         
         guard index < self.countOfItems,
-              let cellAttrs = self.collectionView.layoutAttributesForItem(at: IndexPath(item: index, section: 0)) else {
-            return CGRect.zero
+            let cellAttrs = self.collectionView.layoutAttributesForItem(at: IndexPath(item: index, section: 0)) else {
+                return CGRect.zero
         }
         
         return cellAttrs.frame
@@ -440,8 +439,9 @@ extension TabPagerBar: UICollectionViewDelegateFlowLayout {
             let width = self.delegate!.pagerTabBar!(self, widthForItemAt: indexPath.item)
             return CGSize(width: width, height: self.collectionView.frame.height)
         } else {
-             Swift.fatalError("请设置Cell宽度", file: #file, line: #line)
+            Swift.fatalError("请设置Cell宽度", file: #file, line: #line)
         }
         return CGSize.zero
     }
 }
+

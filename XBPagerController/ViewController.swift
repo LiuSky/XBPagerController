@@ -1,17 +1,15 @@
 //
 //  ViewController.swift
-//  XBTabPagerBar
+//  XBPagerController
 //
-//  Created by xiaobin liu on 2019/2/14.
+//  Created by xiaobin liu on 2019/2/18.
 //  Copyright © 2019 Sky. All rights reserved.
 //
 
 import UIKit
 
-
-/// MARK - 演示控制器
-final class ViewController: UIViewController {
-
+class ViewController: UIViewController {
+    
     /// 列表
     private lazy var tableView: UITableView = {
         let temTableView = UITableView()
@@ -27,15 +25,13 @@ final class ViewController: UIViewController {
     }()
     
     private var array: [String] = ["none", "progress", "progressBounce", "progressElastic", "cover"]
-    
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = "演示Demo"
         self.view.addSubview(tableView)
     }
 }
-
 
 // MARK: - UITableViewDataSource
 extension ViewController: UITableViewDataSource {
@@ -78,12 +74,11 @@ extension ViewController: UITableViewDelegate {
             vc.tabPagerBar.layout.selectedTextColor = UIColor.white
             vc.tabPagerBar.progressView.backgroundColor = UIColor.red
         }
-        
-        
-        
         self.navigationController?.pushViewController(vc, animated: true)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
     
 }
+
+

@@ -1,8 +1,8 @@
 //
 //  TabPagerBarCell.swift
-//  XBTabPagerBar
+//  XBPagerController
 //
-//  Created by xiaobin liu on 2019/2/14.
+//  Created by xiaobin liu on 2019/2/18.
 //  Copyright © 2019 Sky. All rights reserved.
 //
 
@@ -58,3 +58,4 @@ public class TabPagerBarCell: TabPagerCellProtocol {
         self.privateLabel.frame = self.bounds
     }
 }
+

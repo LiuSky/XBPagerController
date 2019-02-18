@@ -1,8 +1,8 @@
 //
 //  AppDelegate.swift
-//  XBTabPagerBar
+//  XBPagerController
 //
-//  Created by xiaobin liu on 2019/2/14.
+//  Created by xiaobin liu on 2019/2/18.
 //  Copyright © 2019 Sky. All rights reserved.
 //
 

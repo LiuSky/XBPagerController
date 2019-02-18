@@ -1,6 +1,6 @@
 //
 //  TabPagerBarDemo.swift
-//  XBTabPagerBar
+//  XBPagerController
 //
 //  Created by xiaobin liu on 2019/2/18.
 //  Copyright © 2019 Sky. All rights reserved.
@@ -8,18 +8,12 @@
 
 import UIKit
 
-
 /// MARK - TabPagerBarDemo
 final class TabPagerBarDemo: UIViewController {
     
     /// TabPagerBar
     public lazy var tabPagerBar: TabPagerBar = {
         let temTabPagerBar = TabPagerBar()
-//        temTabPagerBar.backgroundColor = UIColor.white
-//        temTabPagerBar.layout.barStyle = .cover
-//        temTabPagerBar.layout.progressRadius = 4
-//        temTabPagerBar.layout.selectedTextColor = UIColor.white
-//        temTabPagerBar.progressView.backgroundColor = UIColor.red
         temTabPagerBar.dataSource = self
         temTabPagerBar.delegate = self
         temTabPagerBar.register(TabPagerBarCell.self, forCellWithReuseIdentifier: TabPagerBarCell.cellIdentifier)
@@ -37,8 +31,7 @@ final class TabPagerBarDemo: UIViewController {
         
         self.view.addSubview(tabPagerBar)
         tabPagerBar.translatesAutoresizingMaskIntoConstraints = false
-        tabPagerBar.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 100)
-            .isActive = true
+        tabPagerBar.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 100).isActive = true
         tabPagerBar.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
         tabPagerBar.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
         tabPagerBar.heightAnchor.constraint(equalToConstant: 50).isActive = true
@@ -75,4 +68,3 @@ extension TabPagerBarDemo: TabPagerBarDelegate {
         self.oldIndex = index
     }
 }
-

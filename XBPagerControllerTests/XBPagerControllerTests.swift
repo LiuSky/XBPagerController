@@ -1,15 +1,15 @@
 //
-//  XBTabPagerBarTests.swift
-//  XBTabPagerBarTests
+//  XBPagerControllerTests.swift
+//  XBPagerControllerTests
 //
-//  Created by xiaobin liu on 2019/2/14.
+//  Created by xiaobin liu on 2019/2/18.
 //  Copyright © 2019 Sky. All rights reserved.
 //
 
 import XCTest
-@testable import XBTabPagerBar
+@testable import XBPagerController
 
-class XBTabPagerBarTests: XCTestCase {
+class XBPagerControllerTests: XCTestCase {
 
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
