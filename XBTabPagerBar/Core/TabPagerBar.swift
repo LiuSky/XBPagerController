@@ -175,10 +175,11 @@ extension TabPagerBar {
     ///
     /// - Parameter progressView: <#progressView description#>
     public func setProgressView(_ progressView: UIView) {
-        
-        if self.progressView == progressView {
+
+        guard self.progressView != progressView else {
             return
         }
+        
         
         self.progressView.removeFromSuperview()
         self.progressView = progressView

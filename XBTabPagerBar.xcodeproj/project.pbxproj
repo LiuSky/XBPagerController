@@ -16,6 +16,7 @@
 		3333595C2214FC5600D20CCF /* TabPagerBarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3333595B2214FC5600D20CCF /* TabPagerBarCell.swift */; };
 		3333595E2215053E00D20CCF /* TabPagerBarLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3333595D2215053E00D20CCF /* TabPagerBarLayout.swift */; };
 		333359622215069500D20CCF /* TabPagerBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333359612215069500D20CCF /* TabPagerBar.swift */; };
+		33364042221A455800B83E43 /* TabPagerBarDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33364041221A455800B83E43 /* TabPagerBarDemo.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +43,7 @@
 		3333595B2214FC5600D20CCF /* TabPagerBarCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabPagerBarCell.swift; sourceTree = "<group>"; };
 		3333595D2215053E00D20CCF /* TabPagerBarLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabPagerBarLayout.swift; sourceTree = "<group>"; };
 		333359612215069500D20CCF /* TabPagerBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabPagerBar.swift; sourceTree = "<group>"; };
+		33364041221A455800B83E43 /* TabPagerBarDemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabPagerBarDemo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +88,7 @@
 				3333595A2214FBAD00D20CCF /* Core */,
 				3333593A2214FBA600D20CCF /* AppDelegate.swift */,
 				3333593C2214FBA600D20CCF /* ViewController.swift */,
+				33364041221A455800B83E43 /* TabPagerBarDemo.swift */,
 				3333593E2214FBA600D20CCF /* Main.storyboard */,
 				333359412214FBA800D20CCF /* Assets.xcassets */,
 				333359432214FBA800D20CCF /* LaunchScreen.storyboard */,
@@ -214,6 +217,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				33364042221A455800B83E43 /* TabPagerBarDemo.swift in Sources */,
 				3333593D2214FBA600D20CCF /* ViewController.swift in Sources */,
 				3333593B2214FBA600D20CCF /* AppDelegate.swift in Sources */,
 				3333595C2214FC5600D20CCF /* TabPagerBarCell.swift in Sources */,

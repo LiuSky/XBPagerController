@@ -12,64 +12,78 @@ import UIKit
 /// MARK - 演示控制器
 final class ViewController: UIViewController {
 
-    /// TabPagerBar
-    private lazy var tabPagerBar: TabPagerBar = {
-        let temTabPagerBar = TabPagerBar()
-        temTabPagerBar.backgroundColor = UIColor.gray
-        temTabPagerBar.layout.barStyle = .cover
-        temTabPagerBar.layout.progressRadius = 4
-        temTabPagerBar.progressView.backgroundColor = UIColor.lightGray
-        temTabPagerBar.dataSource = self
-        temTabPagerBar.delegate = self
-        temTabPagerBar.register(TabPagerBarCell.self, forCellWithReuseIdentifier: TabPagerBarCell.cellIdentifier)
-        return temTabPagerBar
+    /// 列表
+    private lazy var tableView: UITableView = {
+        let temTableView = UITableView()
+        temTableView.frame = self.view.bounds
+        temTableView.backgroundColor = UIColor.white
+        temTableView.rowHeight = 50
+        temTableView.separatorInset = .zero
+        temTableView.tableFooterView = UIView()
+        temTableView.dataSource = self
+        temTableView.delegate = self
+        temTableView.register(UITableViewCell.self, forCellReuseIdentifier: "UITableViewCell")
+        return temTableView
     }()
     
-    private lazy var oldIndex = 0
+    private var array: [String] = ["none", "progress", "progressBounce", "progressElastic", "cover"]
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = "演示Demo"
-        self.view.addSubview(tabPagerBar)
-        
-        tabPagerBar.translatesAutoresizingMaskIntoConstraints = false
-        tabPagerBar.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 100)
-            .isActive = true
-        tabPagerBar.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
-        tabPagerBar.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
-        tabPagerBar.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        tabPagerBar.reloadData()
+        self.view.addSubview(tableView)
     }
 }
 
 
-// MARK: - TabPagerBarDataSource
-extension ViewController: TabPagerBarDataSource {
+// MARK: - UITableViewDataSource
+extension ViewController: UITableViewDataSource {
     
-    func numberOfItemsInPagerTabBar() -> Int {
-        return 15
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return array.count
     }
     
-    func pagerTabBar(_ pagerTabBar: TabPagerBar, cellForItemAt index: Int) -> TabPagerCellProtocol {
-        let cell = pagerTabBar.dequeueReusableCell(withReuseIdentifier: TabPagerBarCell.cellIdentifier, for: index)
-        cell.titleLabel.text = "\(index)111"
-        cell.titleLabel.textColor = UIColor.black
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "UITableViewCell")!
+        cell.textLabel?.text = array[indexPath.row]
         return cell
     }
 }
 
 
-// MARK: - TabPagerBarDelegate
-extension ViewController: TabPagerBarDelegate {
+// MARK: - UITableViewDelegate
+extension ViewController: UITableViewDelegate {
     
-    func pagerTabBar(_ pagerTabBar: TabPagerBar, widthForItemAt index: Int) -> CGFloat {
-        return 44
-    }
-    
-    func pagerTabBar(_ pagerTabBar: TabPagerBar, didSelectItemAt index: Int) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = TabPagerBarDemo()
+        vc.tabPagerBar.backgroundColor = UIColor.white
+        switch indexPath.row {
+        case 0:
+            vc.tabPagerBar.layout.barStyle = .none
+            vc.tabPagerBar.layout.selectedTextColor = UIColor.red
+        case 1:
+            vc.tabPagerBar.layout.barStyle = .progress
+            vc.tabPagerBar.layout.selectedTextColor = UIColor.red
+        case 2:
+            vc.tabPagerBar.layout.barStyle = .progressBounce
+            vc.tabPagerBar.layout.selectedTextColor = UIColor.red
+        case 3:
+            vc.tabPagerBar.layout.barStyle = .progressElastic
+            vc.tabPagerBar.layout.selectedTextColor = UIColor.red
+        default:
+            vc.tabPagerBar.backgroundColor = UIColor.white
+            vc.tabPagerBar.layout.barStyle = .cover
+            vc.tabPagerBar.layout.progressRadius = 4
+            vc.tabPagerBar.layout.selectedTextColor = UIColor.white
+            vc.tabPagerBar.progressView.backgroundColor = UIColor.red
+        }
         
-        self.tabPagerBar.scrollToItem(from: oldIndex, to: index, animate: true)
-        self.oldIndex = index
+        
+        
+        self.navigationController?.pushViewController(vc, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
+    
+    
 }
-
