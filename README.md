@@ -1,2 +1,2 @@
-# XBTabPagerBar
+# XBPagerController
 Swift4.2
