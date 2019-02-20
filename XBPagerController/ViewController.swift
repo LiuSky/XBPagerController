@@ -26,6 +26,7 @@ class ViewController: UIViewController {
     
     private var array: [String] = ["none", "progress", "progressBounce", "progressElastic", "cover"]
 
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = "演示Demo"
