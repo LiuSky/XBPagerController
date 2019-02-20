@@ -546,8 +546,6 @@ extension PagerViewLayout {
 }
 
 
-
-
 // MARK: - remove && add visibleViews
 extension PagerViewLayout {
     
@@ -563,7 +561,7 @@ extension PagerViewLayout {
     }
     
     
-    /// 移除可见项目范围
+    /// 移除可见项目范围项
     ///
     /// - Parameter visibleRange: <#visibleRange description#>
     private func removeVisibleItemsOutOfVisibleRange(_ visibleRange: NSRange) {
@@ -584,16 +582,93 @@ extension PagerViewLayout {
     ///   - index: <#index description#>
     private func removeInvisibleItem(_ invisibleItem: AnyObject, at index: Int) {
         
+        let invisibleView = self.view(forItem: invisibleItem, at: index)
+        if invisibleView.superview == nil {
+            return
+        }
         
+        self.dataSource?.pagerViewLayout(self, removeInVisibleItem: invisibleView, at: index)
         
+        let reuseItem = invisibleView
+        if reuseIdentifyClass.count > 0 &&
+            reuseItem.pagerReuseIdentifyKey.count > 0 {
+            enqueueReusableItem(invisibleView, prefetchRange: prefetchRange, at: index)
+        } else {
+            cacheItem(invisibleView, forKey: NSNumber(integerLiteral: index))
+        }
     }
     
+    
+    
+    /// 添加超出可见范围的预取项
+    ///
+    /// - Parameter visibleRange: <#visibleRange description#>
     private func addPrefetchItemsOutOfVisibleRange(_ visibleRange: NSRange) {
+        var visibleIndexItems: [NSNumber: AnyObject] = [:]
         
+        for idx in visibleRange.location..<visibleRange.location + visibleRange.length {
+            // from visibleViews,prefetch,cache
+            var visibleItem = item(for: idx)
+            if visibleItem == nil && (!addVisibleItemOnlyWhenScrollAnimatedEnd || visibleRange.length == 1) {
+                // ↑↑↑ if _addVisibleItemOnlyWhenScrollAnimatedEnd is NO ,scroll visible range change will add item from dataSource, else is YES only scroll animate end(visibleRange.length == 1) will add item from dataSource
+                visibleItem = dataSource?.pagerViewLayout(self, itemFor: idx, prefetching: false)
+            }
+            
+            if let temVisibleItem = visibleItem {
+                addVisibleItem(temVisibleItem, at: idx)
+                visibleIndexItems[NSNumber(integerLiteral: idx)] = temVisibleItem
+            }
+        }
+        
+        if visibleIndexItems.count > 0 {
+            self.visibleIndexItems = visibleIndexItems
+        } else {
+            self.visibleIndexItems = nil
+        }
     }
     
-    func addVisibleItems(inVisibleRange visibleRange: NSRange) {
+    
+    
+    ///  添加可见项
+    ///
+    /// - Parameters:
+    ///   - visibleItem: visibleItem
+    ///   - index: index
+    private func addVisibleItem(_ visibleItem: AnyObject, at index: Int) {
+        
+        let view = self.view(forItem: visibleItem, at: index)
+        if view.superview != nil && view.superview != scrollView {
+            view.removeFromSuperview()
+        }
+        
+        let frame = frameForItem(at: index)
+        if view.frame != frame {
+            view.frame = frame
+        }
+        
+        if !prefetchItemWillAddToSuperView && view.superview != nil {
+            return
+        }
+        
+        if prefetchItemWillAddToSuperView && view.superview != nil {
+            
+            let viewController = self.viewController(forItem: visibleItem, at: index)
+            if viewController == nil || viewController?.presentationController != nil {
+                return
+            }
+        }
+        
+        self.dataSource?.pagerViewLayout(self, addVisibleItem: visibleItem, at: index)
     }
+    
+    
+    /// <#Description#>
+    ///
+    /// - Parameter visibleRange: <#visibleRange description#>
+    private func addVisibleItems(inVisibleRange visibleRange: NSRange) {
+        
+    }
+
 }
 
 
