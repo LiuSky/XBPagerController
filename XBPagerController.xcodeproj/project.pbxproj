@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		33234CA2221D348200C5E35A /* NSObject+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33234CA1221D348200C5E35A /* NSObject+.swift */; };
+		3333FDF7221F8991002B37BA /* PagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3333FDF6221F8991002B37BA /* PagerView.swift */; };
 		33364050221A51E200B83E43 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3336404F221A51E200B83E43 /* AppDelegate.swift */; };
 		33364052221A51E200B83E43 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33364051221A51E200B83E43 /* ViewController.swift */; };
 		33364055221A51E200B83E43 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 33364053221A51E200B83E43 /* Main.storyboard */; };
@@ -19,7 +20,6 @@
 		33364075221A523D00B83E43 /* TabPagerBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33364074221A523D00B83E43 /* TabPagerBar.swift */; };
 		33364077221A52AC00B83E43 /* TabPagerBarDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33364076221A52AC00B83E43 /* TabPagerBarDemo.swift */; };
 		3336407A221A61D900B83E43 /* PagerViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33364079221A61D900B83E43 /* PagerViewLayout.swift */; };
-		3336407C221A858B00B83E43 /* PagerAutoPurgeCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3336407B221A858B00B83E43 /* PagerAutoPurgeCache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +34,7 @@
 
 /* Begin PBXFileReference section */
 		33234CA1221D348200C5E35A /* NSObject+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+.swift"; sourceTree = "<group>"; };
+		3333FDF6221F8991002B37BA /* PagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagerView.swift; sourceTree = "<group>"; };
 		3336404C221A51E200B83E43 /* XBPagerController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XBPagerController.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3336404F221A51E200B83E43 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		33364051221A51E200B83E43 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -49,7 +50,6 @@
 		33364074221A523D00B83E43 /* TabPagerBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabPagerBar.swift; sourceTree = "<group>"; };
 		33364076221A52AC00B83E43 /* TabPagerBarDemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabPagerBarDemo.swift; sourceTree = "<group>"; };
 		33364079221A61D900B83E43 /* PagerViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagerViewLayout.swift; sourceTree = "<group>"; };
-		3336407B221A858B00B83E43 /* PagerAutoPurgeCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagerAutoPurgeCache.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,8 +116,8 @@
 			isa = PBXGroup;
 			children = (
 				33364079221A61D900B83E43 /* PagerViewLayout.swift */,
-				3336407B221A858B00B83E43 /* PagerAutoPurgeCache.swift */,
 				33234CA1221D348200C5E35A /* NSObject+.swift */,
+				3333FDF6221F8991002B37BA /* PagerView.swift */,
 				33364078221A554D00B83E43 /* TabPager */,
 			);
 			path = Classas;
@@ -241,8 +241,8 @@
 				33364050221A51E200B83E43 /* AppDelegate.swift in Sources */,
 				3336407A221A61D900B83E43 /* PagerViewLayout.swift in Sources */,
 				33364073221A521900B83E43 /* TabPagerBarLayout.swift in Sources */,
+				3333FDF7221F8991002B37BA /* PagerView.swift in Sources */,
 				33234CA2221D348200C5E35A /* NSObject+.swift in Sources */,
-				3336407C221A858B00B83E43 /* PagerAutoPurgeCache.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

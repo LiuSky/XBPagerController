@@ -9,9 +9,18 @@
 import UIKit
 
 
+/// 方向
+///
+/// - left: <#left description#>
+/// - right: <#right description#>
+public enum PagerScrollingDirection: Int {
+    case left
+    case right
+}
+
+
 /// MARK - 数据源
 @objc public protocol PagerViewLayoutDataSource: NSObjectProtocol {
-    
     
     /// 项目数量
     ///
@@ -152,7 +161,6 @@ import UIKit
 }
 
 
-
 /// MARK - PagerViewLayout
 public class PagerViewLayout: NSObject {
     
@@ -199,7 +207,7 @@ public class PagerViewLayout: NSObject {
         }
     }
     
-    /// 因为当父视图添加子视图(有tableView)时会调用relodData，如果设置Yes会进行优化。默认不
+    /// 因为当父视图添加子视图(有tableView)时会调用relodData，如果设置true会进行优化。默认false
     public var prefetchItemWillAddToSuperView: Bool = false
     
     /// 预取范围
@@ -240,7 +248,7 @@ public class PagerViewLayout: NSObject {
     private lazy var reuseIdentifyItems: [String: AnyObject] = [:]
     
     /// 上一项偏差x
-    private var preOffsetX = 0
+    private var preOffsetX: CGFloat = 0
     
     /// 已经刷新
     private var didReloadData = false
@@ -257,6 +265,12 @@ public class PagerViewLayout: NSObject {
     /// 需要布局内容
     private var needLayoutContent: Bool = false
     
+    /// 是否点击滚动
+    private var isTapScrollMoved: Bool = false
+    
+    /// 滚动View Observable
+    private var scrollViewKeyValueObservation: NSKeyValueObservation?
+    
     /// 初始化
     ///
     /// - Parameter scrollView: <#scrollView description#>
@@ -264,7 +278,15 @@ public class PagerViewLayout: NSObject {
         super.init()
         self.scrollView = scrollView
         configureScrollView()
-        addScrollViewObservers()
+        addKeyValueObservation()
+    }
+    
+    
+    deinit {
+        scrollView.delegate = nil
+        reuseIdentifyItems.removeAll()
+        reuseIdentifyClass.removeAll()
+        clearMemoryCache()
     }
 }
 
@@ -598,19 +620,18 @@ extension PagerViewLayout {
         }
     }
     
-    
-    
-    /// 添加超出可见范围的预取项
+    /// 添加可见项
     ///
-    /// - Parameter visibleRange: <#visibleRange description#>
-    private func addPrefetchItemsOutOfVisibleRange(_ visibleRange: NSRange) {
+    /// - Parameter visibleRange: visibleRange
+    private func addVisibleItems(inVisibleRange visibleRange: NSRange) {
+        
         var visibleIndexItems: [NSNumber: AnyObject] = [:]
         
         for idx in visibleRange.location..<visibleRange.location + visibleRange.length {
             // from visibleViews,prefetch,cache
             var visibleItem = item(for: idx)
             if visibleItem == nil && (!addVisibleItemOnlyWhenScrollAnimatedEnd || visibleRange.length == 1) {
-                // ↑↑↑ if _addVisibleItemOnlyWhenScrollAnimatedEnd is NO ,scroll visible range change will add item from dataSource, else is YES only scroll animate end(visibleRange.length == 1) will add item from dataSource
+                
                 visibleItem = dataSource?.pagerViewLayout(self, itemFor: idx, prefetching: false)
             }
             
@@ -626,7 +647,6 @@ extension PagerViewLayout {
             self.visibleIndexItems = nil
         }
     }
-    
     
     
     ///  添加可见项
@@ -662,32 +682,208 @@ extension PagerViewLayout {
     }
     
     
-    /// <#Description#>
+    /// 添加超出可见范围的预取项
     ///
     /// - Parameter visibleRange: <#visibleRange description#>
-    private func addVisibleItems(inVisibleRange visibleRange: NSRange) {
+    func addPrefetchItemsOutOfVisibleRange(_ visibleRange: NSRange) {
         
+        guard prefetchItemCount > 0 else {
+            return
+        }
+        
+        let prefetchRange = prefetchRangeWithVisibleRange(visibleRange: visibleRange,
+                                                          prefetchItemCount: prefetchItemCount,
+                                                          countOfPagerItems: countOfPagerItems)
+        if visibleRange.length == 1 {
+            
+            var prefetchIndexItems: [NSNumber: AnyObject] = [:]
+            for index in prefetchRange.location..<NSMaxRange(prefetchRange) {
+                var prefetchItem: AnyObject? = nil
+                if NSLocationInRange(index, visibleRange) {
+                    prefetchItem = visibleIndexItems?[NSNumber(integerLiteral: index)]
+                } else {
+                    prefetchItem = prefetchInvisibleItem(at: index)
+                }
+                if let temPrefetchItem = prefetchItem {
+                    prefetchIndexItems[NSNumber(integerLiteral: index)] = temPrefetchItem
+                }
+            }
+            
+            let haveReuseIdentifyClass = reuseIdentifyClass.count > 0
+            if haveReuseIdentifyClass || prefetchItemWillAddToSuperView {
+                
+                self.prefetchIndexItems?.forEach { element in
+                    
+                    let index = element.key.intValue
+                    if haveReuseIdentifyClass {
+                        enqueueReusableItem(element.value as! NSObject, prefetchRange: prefetchRange, at: index)
+                    }
+                    if prefetchItemWillAddToSuperView && !NSLocationInRange(index, prefetchRange) {
+                        let view = self.view(forItem: element.value, at: index)
+                        if view.superview == scrollView && self.visibleIndexItems?[element.key] == nil {
+                            view.removeFromSuperview()
+                        }
+                        
+                    }
+                    
+                }
+            }
+            
+            if prefetchIndexItems.count > 0 {
+                self.prefetchRange = prefetchRange
+                self.prefetchIndexItems = prefetchIndexItems
+            } else {
+                self.prefetchRange = NSMakeRange(0, 0)
+                self.prefetchIndexItems = nil
+            }
+        } else if NSIntersectionRange(visibleRange, self.prefetchRange).length == 0 {
+            
+            if prefetchItemWillAddToSuperView {
+                
+                self.prefetchIndexItems?.forEach { element in
+                    
+                    let view = self.view(forItem: element.value, at: element.key.intValue)
+                    if view.superview == scrollView && self.visibleIndexItems?[element.key] == nil {
+                        view.removeFromSuperview()
+                    }
+                }
+            }
+            self.prefetchRange = NSMakeRange(0, 0)
+            self.prefetchIndexItems = nil
+        }
     }
-
+    
+    
+    private func prefetchInvisibleItem(at index: Int) -> UIView {
+        
+        var prefetchItem = self.prefetchIndexItems?[NSNumber(integerLiteral: index)]
+        if prefetchItem == nil {
+            prefetchItem = self.visibleIndexItems?[NSNumber(integerLiteral: index)]
+        }
+        
+        if prefetchItem == nil {
+            prefetchItem = self.cacheItem(forKey: NSNumber(integerLiteral: index))
+        }
+        
+        if prefetchItem == nil {
+            
+            prefetchItem = dataSource!.pagerViewLayout(self, itemFor: index, prefetching: true)
+            let view = self.view(forItem: prefetchItem!, at: index)
+            let frame = self.frameForItem(at: index)
+            if view.frame != frame {
+                view.frame = frame
+            }
+            if prefetchItemWillAddToSuperView && view.superview != scrollView {
+                scrollView.addSubview(view)
+            }
+        }
+        return prefetchItem as! UIView
+    }
 }
 
 
 
-// MARK: - private func
+// MARK: - caculate index
 extension PagerViewLayout {
     
-    /// 添加ScrollView观察者
-    private func addScrollViewObservers() {
-        self.addObserver(self, forKeyPath: "scrollView.frame", options: [NSKeyValueObservingOptions.new,
-                                                                         NSKeyValueObservingOptions.old], context: nil)
+    /// 计算索引
+    ///
+    /// - Parameters:
+    ///   - offsetX: <#offsetX description#>
+    ///   - direction: <#direction description#>
+    private func caculateIndex(withOffsetX offsetX: CGFloat, direction: PagerScrollingDirection) {
+        
+        guard !scrollView.frame.isEmpty else {
+            return
+        }
+        
+        if countOfPagerItems <= 0 {
+            curIndex = -1
+            return
+        }
+        
+        let width = scrollView.frame.width
+        var index = 0
+        var percentChangeIndex = changeIndexWhenScrollProgress
+        if changeIndexWhenScrollProgress >= 1.0 || self.progressCaculateEnable() {
+            percentChangeIndex = 0.999999999
+        }
+        
+        if direction == .left {
+            index = Int(ceil(offsetX / width - percentChangeIndex))
+        } else {
+            index = Int(floor(offsetX / width + percentChangeIndex))
+        }
+        
+        if index < 0 {
+            index = 0
+        } else if index >= countOfPagerItems {
+            index = countOfPagerItems - 1
+        }
+        
+        if index == curIndex {
+            return
+        }
+        
+        let fromIndex = max(curIndex, 0)
+        self.curIndex = index
+        self.delegate?.pagerViewLayout?(self, transitionFrom: fromIndex, to: curIndex, animated: scrollAnimated)
+        scrollAnimated = true
     }
     
-    /// 移除ScrollView观察者
-    private func removeScrollViewObservers() {
-        self.removeObserver(self, forKeyPath: "scrollView.frame")
+    
+    
+    /// 计算索引进度
+    ///
+    /// - Parameters:
+    ///   - offsetX: <#offsetX description#>
+    ///   - direction: <#direction description#>
+    private func caculateIndexByProgress(withOffsetX offsetX: CGFloat, direction: PagerScrollingDirection) {
+        
+        guard !scrollView.frame.isEmpty else {
+            return
+        }
+        
+        if countOfPagerItems <= 0 {
+            curIndex = -1
+            return
+        }
+        
+        let width = scrollView.frame.width
+        let floadIndex = offsetX / width
+        let floorIndex: Int = Int(floor(floadIndex))
+        if floorIndex < 0 || floorIndex >= countOfPagerItems || Int(floadIndex) > countOfPagerItems-1 {
+            return
+        }
+        
+        var progress = offsetX / width - CGFloat(floorIndex)
+        var fromIndex = 0, toIndex = 0
+        if direction == .left {
+            fromIndex = floorIndex
+            toIndex = min(countOfPagerItems - 1, fromIndex + 1)
+            if fromIndex == toIndex && toIndex == countOfPagerItems-1 {
+                fromIndex = countOfPagerItems - 2
+                progress = 1.0
+            }
+        } else {
+            
+            toIndex = floorIndex
+            fromIndex = min(countOfPagerItems - 1, toIndex + 1)
+            progress = 1.0 - progress
+        }
+        
+        self.delegate?.pagerViewLayout?(self, transitionFrom: fromIndex, to: toIndex, progress: progress)
+    }
+    
+    
+    /// 进度是否启用
+    ///
+    /// - Returns: <#return value description#>
+    private func progressCaculateEnable() -> Bool {
+        let delegateFlags = self.delegate?.responds(to: #selector(self.delegate?.pagerViewLayout(_:transitionFrom:to:progress:))) ?? false
+        return delegateFlags && progressAnimateEnabel && !isTapScrollMoved
     }
 }
-
 
 
 // MARK: - memoryCache
@@ -712,7 +908,7 @@ extension PagerViewLayout {
         if autoMemoryCache {
             
             if let cacheItem = memoryCache.object(forKey: key),
-               cacheItem === item {
+                cacheItem === item {
                 return
             }
             memoryCache.setObject(item, forKey: key)
@@ -729,6 +925,82 @@ extension PagerViewLayout {
             return memoryCache.object(forKey: key)
         }
         return nil
+    }
+}
+
+
+// MARK: - UIScrollViewDelegate
+extension PagerViewLayout: UIScrollViewDelegate {
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        guard let _ = scrollView.superview else {
+            return
+        }
+        
+        let offsetX = scrollView.contentOffset.x
+        let direction: PagerScrollingDirection = offsetX >= preOffsetX ? .left : .right
+        
+        if progressCaculateEnable() {
+           self.caculateIndexByProgress(withOffsetX: offsetX, direction: direction)
+        }
+        self.caculateIndex(withOffsetX: offsetX, direction: direction)
+        
+        self.layoutIfNeed()
+        isTapScrollMoved = false
+        self.delegate?.pagerViewLayoutDidScroll?(self)
+        
+    }
+    
+    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        
+        preOffsetX = scrollView.contentOffset.x
+        self.delegate?.pagerViewLayoutWillBeginDragging?(self)
+        
+    }
+    
+    private func scrollViewWillScroll(to scrollView: UIScrollView, animate: Bool) {
+        
+        preOffsetX = scrollView.contentOffset.x
+        isTapScrollMoved = true
+        scrollAnimated = animate
+        self.delegate?.pagerViewLayoutWillBeginScroll?(toView: self, animate: animate)
+    }
+    
+    private func scrollViewDidScroll(to scrollView: UIScrollView, animate: Bool) {
+        self.delegate?.pagerViewLayoutDidEndScroll?(toView: self, animate: animate)
+    }
+    
+    public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        self.delegate?.pagerViewLayoutDidEndDragging?(self, willDecelerate: decelerate)
+    }
+    
+    public func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
+        self.delegate?.pagerViewLayoutWillBeginDecelerating?(self)
+    }
+    
+    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        self.delegate?.pagerViewLayoutDidEndDecelerating?(self)
+    }
+    
+    public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        self.delegate?.pagerViewLayoutDidEndScrollingAnimation?(self)
+    }
+    
+}
+
+// MARK: - Observer
+extension PagerViewLayout {
+    
+    /// 添加ScrollView观察者
+    private func addKeyValueObservation() {
+        
+        scrollViewKeyValueObservation?.invalidate()
+        scrollViewKeyValueObservation = scrollView.observe(\.frame, options: [.new, .old]) { [weak self] (scrollView, change) in
+            guard let self = self else { return }
+            guard change.newValue != change.oldValue else { return }
+            self.setNeedLayout()
+        }
     }
 }
 
@@ -776,26 +1048,4 @@ extension PagerViewLayout {
         let rightIndex = min(Int(visibleRange.location + visibleRange.length) + prefetchItemCount, countOfPagerItems)
         return NSRange(location: leftIndex, length: rightIndex - leftIndex)
     }
-}
-
-
-// MARK: - UIScrollViewDelegate
-extension PagerViewLayout: UIScrollViewDelegate {
-    
-    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
-    }
-    
-    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        
-    }
-    
-    private func scrollViewWillScroll(to scrollView: UIScrollView, animate: Bool) {
-        
-    }
-    
-    private func scrollViewDidScroll(to scrollView: UIScrollView, animate: Bool) {
-        
-    }
-    
 }

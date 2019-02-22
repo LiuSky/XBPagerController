@@ -10,21 +10,19 @@ import Foundation
 
 
 private var kPagerReuseIdentifyKey: Void?
+
 // MARK: - Extension pagerReuseIdentifyKey
 public extension NSObject {
     
     public var pagerReuseIdentifyKey: String {
-        get {
-            let pagerReuseIdentifyKey: String
-            if let value = objc_getAssociatedObject(self, &kPagerReuseIdentifyKey) as? String {
-                pagerReuseIdentifyKey = value
-            } else {
-                pagerReuseIdentifyKey = ""
-                objc_setAssociatedObject(self, &kPagerReuseIdentifyKey, pagerReuseIdentifyKey, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            }
-            return pagerReuseIdentifyKey
-        }
         set {
+            objc_setAssociatedObject(self, &kPagerReuseIdentifyKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
+        }
+        get {
+            if let value = objc_getAssociatedObject(self, &kPagerReuseIdentifyKey) as? String {
+                return value
+            }
+            return ""
         }
     }
 }
