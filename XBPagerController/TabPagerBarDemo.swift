@@ -48,7 +48,7 @@ final class TabPagerBarDemo: UIViewController {
         
         self.view.addSubview(pageView)
         pageView.translatesAutoresizingMaskIntoConstraints = false
-        pageView.topAnchor.constraint(equalTo: self.tabPagerBar.bottomAnchor, constant: 100).isActive = true
+        pageView.topAnchor.constraint(equalTo: self.tabPagerBar.bottomAnchor).isActive = true
         pageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
         pageView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
         pageView.heightAnchor.constraint(equalToConstant: 200).isActive = true
