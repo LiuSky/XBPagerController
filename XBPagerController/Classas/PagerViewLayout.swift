@@ -183,8 +183,8 @@ public class PagerViewLayout: NSObject {
     private(set) var curIndex = -1
     
     /// 缓存项
-    private(set) lazy var memoryCache: NSCache<NSNumber, AnyObject> = {
-        let temPagerAutoPurgeCache = NSCache<NSNumber, AnyObject>()
+    private(set) lazy var memoryCache: MemoryCache = {
+        let temPagerAutoPurgeCache = MemoryCache()
         temPagerAutoPurgeCache.countLimit = 16 //默认16
         return temPagerAutoPurgeCache
     }()

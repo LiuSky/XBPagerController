@@ -185,7 +185,6 @@ public class PagerView: UIView {
     
     /// 防止系统automaticallyAdjustsScrollViewInsets
     private func addFixAutoAdjustInsetScrollView() {
-        
         let view = UIView()
         addSubview(view)
     }
@@ -194,6 +193,7 @@ public class PagerView: UIView {
     private func addLayoutScrollView() {
         let contentView = UIScrollView()
         let layout = PagerViewLayout(contentView)
+        layout.prefetchItemCount = 1
         layout.dataSource = self
         layout.delegate = self
         self.addSubview(contentView)
@@ -217,10 +217,11 @@ public class PagerView: UIView {
 extension PagerView {
     
     func willBeginScrollingAnimate(_ animate: Bool) {
-        
+        self.delegate?.pagerViewWillBeginScrolling(self, animate: animate)
     }
     
     func didEndScrollingAnimate(_ animate: Bool) {
+        self.delegate?.pagerViewDidEndScrolling(self, animate: animate)
     }
 }
 

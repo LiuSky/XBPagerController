@@ -37,10 +37,9 @@ final class TabPagerBarDemo: UIViewController {
         super.viewDidLoad()
         self.navigationItem.title = "TabPagerBarDemo"
         self.view.backgroundColor = UIColor.black
-        
         self.view.addSubview(tabPagerBar)
         tabPagerBar.translatesAutoresizingMaskIntoConstraints = false
-        tabPagerBar.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 100).isActive = true
+        tabPagerBar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
         tabPagerBar.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
         tabPagerBar.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
         tabPagerBar.heightAnchor.constraint(equalToConstant: 50).isActive = true
