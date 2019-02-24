@@ -20,12 +20,12 @@ final class TabPagerBarDemo: UIViewController {
         return temTabPagerBar
     }()
     
-    public lazy var pageView: PagerView = {
-       let temPageView = PagerView()
-       temPageView.dataSource = self
+    public lazy var pageView: PagerController = {
+       let temPageView = PagerController()
+        temPageView.dataSource = self
         temPageView.delegate = self
-        temPageView.register(PageViewRed.self, forViewWithReuseIdentifier: "PageViewRed")
-        temPageView.register(PageViewYellow.self, forViewWithReuseIdentifier: "PageViewYellow")
+        temPageView.register(PageViewRedViewController.self, forControllerWithReuseIdentifier: "PageViewRedViewController")
+        temPageView.register(PageViewYellowViewController.self, forControllerWithReuseIdentifier: "PageViewYellowViewController")
         return temPageView
     }()
     
@@ -45,12 +45,13 @@ final class TabPagerBarDemo: UIViewController {
         tabPagerBar.heightAnchor.constraint(equalToConstant: 50).isActive = true
         tabPagerBar.reloadData()
         
-        self.view.addSubview(pageView)
-        pageView.translatesAutoresizingMaskIntoConstraints = false
-        pageView.topAnchor.constraint(equalTo: self.tabPagerBar.bottomAnchor).isActive = true
-        pageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
-        pageView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
-        pageView.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        self.addChild(pageView)
+        self.view.addSubview(pageView.view)
+        pageView.view.translatesAutoresizingMaskIntoConstraints = false
+        pageView.view.topAnchor.constraint(equalTo: self.tabPagerBar.bottomAnchor).isActive = true
+        pageView.view.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
+        pageView.view.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
+        pageView.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
         pageView.reloadData()
     }
 }
@@ -79,38 +80,42 @@ extension TabPagerBarDemo: TabPagerBarDelegate {
     }
     
     func pagerTabBar(_ pagerTabBar: TabPagerBar, didSelectItemAt index: Int) {
-        self.pageView.scrollToView(at: index, animate: true)
+        self.pageView.scrollToController(at: index, animate: true)
     }
 }
 
 
 // MARK: - <#PagerViewDataSource#>
-extension TabPagerBarDemo: PagerViewDataSource {
-    
-    func numberOfViewsInPagerView() -> Int {
+extension TabPagerBarDemo: PagerControllerDataSource {
+    func numberOfControllersInPagerController() -> Int {
         return array.count
     }
     
-    func pagerView(_ pagerView: PagerView, viewFor index: Int, prefetching: Bool) -> UIView {
+    func pagerController(_ pagerController: PagerController, controllerFor index: Int, prefetching: Bool) -> UIViewController {
         if index % 2 == 1 {
-            let view = pagerView.dequeueReusableView(withReuseIdentifier: "PageViewRed", for: index)
-            return view
+            let viewController =
+                
+                pagerController.dequeueReusableController(withReuseIdentifier: "PageViewRedViewController", for: index)
+            return viewController
         } else {
-            let view = pagerView.dequeueReusableView(withReuseIdentifier: "PageViewYellow", for: index)
-            return view
+            let viewController =
+                
+                pagerController.dequeueReusableController(withReuseIdentifier: "PageViewYellowViewController", for: index)
+            return viewController
         }
     }
 }
 
 
+
 // MARK: - <#PagerViewDelegate#>
-extension TabPagerBarDemo: PagerViewDelegate {
+extension TabPagerBarDemo: PagerControllerDelegate {
     
-    func pagerView(_ pagerView: PagerView, transitionFrom fromIndex: Int, to toIndex: Int, animated: Bool) {
+    func pagerController(_ pagerController: PagerController, transitionFrom fromIndex: Int, to toIndex: Int, animated: Bool) {
         self.tabPagerBar.scrollToItem(from: fromIndex, to: toIndex, animate: animated)
     }
     
-    func pagerView(_ pagerView: PagerView, transitionFrom fromIndex: Int, to toIndex: Int, progress: CGFloat) {
+    func pagerController(_ pagerController: PagerController, transitionFrom fromIndex: Int, to toIndex: Int, progress: CGFloat) {
         self.tabPagerBar.scrollToItem(from: fromIndex, to: toIndex, progress: progress)
     }
 }
@@ -138,5 +143,19 @@ final class PageViewYellow: UIView {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+final class PageViewRedViewController: UIViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.view.backgroundColor = UIColor.red
+    }
+}
+
+final class PageViewYellowViewController: UIViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.view.backgroundColor = UIColor.yellow
     }
 }

@@ -157,7 +157,7 @@ public enum PagerScrollingDirection: Int {
     ///
     /// - Parameter pagerViewLayout: pagerViewLayout
     @objc optional func pagerViewLayoutDidEndScrollingAnimation(_ pagerViewLayout: PagerViewLayout)
-    
+
 }
 
 
@@ -609,9 +609,9 @@ extension PagerViewLayout {
             return
         }
         
-        self.dataSource?.pagerViewLayout(self, removeInVisibleItem: invisibleView, at: index)
+        self.dataSource?.pagerViewLayout(self, removeInVisibleItem: invisibleItem, at: index)
         
-        let reuseItem = invisibleView
+        let reuseItem = invisibleItem as! NSObject
         if reuseIdentifyClass.count > 0 &&
             reuseItem.pagerReuseIdentifyKey.count > 0 {
             enqueueReusableItem(invisibleView, prefetchRange: prefetchRange, at: index)
