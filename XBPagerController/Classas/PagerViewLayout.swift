@@ -415,8 +415,8 @@ extension PagerViewLayout {
     
     /// 视图索引位置
     ///
-    /// - Parameter index: <#index description#>
-    /// - Returns: <#return value description#>
+    /// - Parameter index: index
+    /// - Returns: CGRect
     public func frameForItem(at index: Int) -> CGRect {
         
         var frame = frameForItemAtIndex(index: index, frame: scrollView.frame)

@@ -10,7 +10,6 @@
 		33234CA2221D348200C5E35A /* NSObject+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33234CA1221D348200C5E35A /* NSObject+.swift */; };
 		3333FDF7221F8991002B37BA /* PagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3333FDF6221F8991002B37BA /* PagerView.swift */; };
 		3333FDFC221FBED7002B37BA /* MemoryCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3333FDFB221FBED7002B37BA /* MemoryCache.swift */; };
-		3333FDFF221FE42E002B37BA /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3333FDFE221FE42E002B37BA /* Layout.swift */; };
 		33364050221A51E200B83E43 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3336404F221A51E200B83E43 /* AppDelegate.swift */; };
 		33364052221A51E200B83E43 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33364051221A51E200B83E43 /* ViewController.swift */; };
 		33364055221A51E200B83E43 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 33364053221A51E200B83E43 /* Main.storyboard */; };
@@ -39,7 +38,6 @@
 		33234CA1221D348200C5E35A /* NSObject+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+.swift"; sourceTree = "<group>"; };
 		3333FDF6221F8991002B37BA /* PagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagerView.swift; sourceTree = "<group>"; };
 		3333FDFB221FBED7002B37BA /* MemoryCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryCache.swift; sourceTree = "<group>"; };
-		3333FDFE221FE42E002B37BA /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
 		3336404C221A51E200B83E43 /* XBPagerController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XBPagerController.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3336404F221A51E200B83E43 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		33364051221A51E200B83E43 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -121,7 +119,6 @@
 		3336406F221A51E800B83E43 /* Classas */ = {
 			isa = PBXGroup;
 			children = (
-				3333FDFE221FE42E002B37BA /* Layout.swift */,
 				3333FDFB221FBED7002B37BA /* MemoryCache.swift */,
 				33364079221A61D900B83E43 /* PagerViewLayout.swift */,
 				33234CA1221D348200C5E35A /* NSObject+.swift */,
@@ -251,7 +248,6 @@
 				33364071221A520700B83E43 /* TabPagerBarCell.swift in Sources */,
 				33364050221A51E200B83E43 /* AppDelegate.swift in Sources */,
 				3336407A221A61D900B83E43 /* PagerViewLayout.swift in Sources */,
-				3333FDFF221FE42E002B37BA /* Layout.swift in Sources */,
 				33364073221A521900B83E43 /* TabPagerBarLayout.swift in Sources */,
 				3333FDF7221F8991002B37BA /* PagerView.swift in Sources */,
 				33234CA2221D348200C5E35A /* NSObject+.swift in Sources */,
