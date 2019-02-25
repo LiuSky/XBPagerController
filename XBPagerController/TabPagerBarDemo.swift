@@ -14,6 +14,9 @@ final class TabPagerBarDemo: UIViewController {
     /// TabPagerBar
     public lazy var tabPagerBar: TabPagerBar = {
         let temTabPagerBar = TabPagerBar()
+        let temBgView = UIView()
+        temBgView.backgroundColor = UIColor.red
+        temTabPagerBar.backgroundView = temBgView
         temTabPagerBar.dataSource = self
         temTabPagerBar.delegate = self
         temTabPagerBar.register(TabPagerBarCell.self, forCellWithReuseIdentifier: TabPagerBarCell.cellIdentifier)
@@ -64,7 +67,7 @@ extension TabPagerBarDemo: TabPagerBarDataSource {
     }
     
     func pagerTabBar(_ pagerTabBar: TabPagerBar, cellForItemAt index: Int) -> TabPagerCellProtocol {
-        let cell = pagerTabBar.dequeueReusableCell(withReuseIdentifier: TabPagerBarCell.cellIdentifier, for: index)
+        let cell = pagerTabBar.dequeueReusableCell(withReuseIdentifier: TabPagerBarCell.cellIdentifier, for: index)  as! TabPagerBarCell
         cell.titleLabel.text = array[index]
         cell.titleLabel.textColor = UIColor.black
         return cell

@@ -8,7 +8,7 @@
 
 import UIKit
 
-/// MARK - 数据源协议
+/// MARK - 数据源
 public protocol TabPagerBarDataSource: NSObjectProtocol {
     
     /// 单元格数量
@@ -20,14 +20,14 @@ public protocol TabPagerBarDataSource: NSObjectProtocol {
 
 
 
-/// MARK - 回调协议
+/// MARK - 委托
 @objc public protocol TabPagerBarDelegate: NSObjectProtocol {
+    
+    /// 如果单元格wdith不是变量，则可以设置layout.cellWidth。否则，您可以实现此返回单元格宽度。单元格宽度不包含单元格边缘
+    func pagerTabBar(_ pagerTabBar: TabPagerBar, widthForItemAt index: Int) -> CGFloat
     
     /// 配置布局
     @objc optional func pagerTabBar(_ pagerTabBar: TabPagerBar, configureLayout layout: TabPagerBarLayout)
-    
-    /// 如果单元格wdith不是变量，则可以设置layout.cellWidth。否则，您可以实现此返回单元格宽度。单元格宽度不包含单元格边缘
-    @objc optional func pagerTabBar(_ pagerTabBar: TabPagerBar, widthForItemAt index: Int) -> CGFloat
     
     /// 选择单元格项
     @objc optional func pagerTabBar(_ pagerTabBar: TabPagerBar, didSelectItemAt index: Int)
@@ -40,27 +40,32 @@ public protocol TabPagerBarDataSource: NSObjectProtocol {
 }
 
 
-
 /// MARK - TabPagerBar
 public class TabPagerBar: UIView {
-    
+
     /// 数据源协议
-    public weak var dataSource: TabPagerBarDataSource?
+    public weak var dataSource: TabPagerBarDataSource!
     
-    /// 回调协议
+    /// 委托
     public weak var delegate: TabPagerBarDelegate?
-    
-    /// 布局
-    public lazy var layout: TabPagerBarLayout = {
-        let temLayout = TabPagerBarLayout(pagerTabBar: self)
-        return temLayout
-    }()
     
     /// 是否自动滚动到中间
     public var autoScrollItemToCenter: Bool = true
     
-    /// 内容边距
-    public var contentInset: UIEdgeInsets = .zero
+    /// 背景View
+    public var backgroundView: UIView? {
+        didSet {
+            
+            if let oldView = oldValue {
+                oldView.removeFromSuperview()
+            }
+            
+            if let newView = backgroundView {
+                newView.frame = bounds
+                insertSubview(newView, at: 0)
+            }
+        }
+    }
     
     /// 默认数量为0
     private(set) var countOfItems: Int = 0
@@ -75,25 +80,12 @@ public class TabPagerBar: UIView {
         return progressView
     }()
     
-    /// 背景View
-    private var backgroundView: UIView?
-    
-    /// 列表View
-    private(set) lazy var collectionView: UICollectionView = {
-        
-        let flowLayout = UICollectionViewFlowLayout()
-        flowLayout.scrollDirection = .horizontal
-        let temCollectionView = UICollectionView(frame: self.bounds.inset(by: self.contentInset), collectionViewLayout: flowLayout)
-        temCollectionView.showsVerticalScrollIndicator = false
-        temCollectionView.showsHorizontalScrollIndicator = false
-        temCollectionView.backgroundColor = UIColor.clear
-        if #available(iOS 10.0, *) {
-            temCollectionView.isPrefetchingEnabled = false
-        }
-        temCollectionView.dataSource = self
-        temCollectionView.delegate = self
-        return temCollectionView
+    /// 布局
+    public lazy var layout: TabPagerBarLayout = {
+        let temLayout = TabPagerBarLayout(pagerTabBar: self)
+        return temLayout
     }()
+    
     
     /// 是否首个布局
     private var isFirstLayout: Bool = true
@@ -101,6 +93,22 @@ public class TabPagerBar: UIView {
     /// 已经布局子视图
     private var didLayoutSubViews: Bool = false
     
+    /// 列表View
+    private(set) lazy var collectionView: UICollectionView = {
+        
+        let flowLayout = UICollectionViewFlowLayout()
+        flowLayout.scrollDirection = .horizontal
+        let temCollectionView = UICollectionView(frame: self.bounds, collectionViewLayout: flowLayout)
+        temCollectionView.showsVerticalScrollIndicator = false
+        temCollectionView.showsHorizontalScrollIndicator = false
+        temCollectionView.backgroundColor = UIColor.white
+        if #available(iOS 10.0, *) {
+            temCollectionView.isPrefetchingEnabled = false
+        }
+        temCollectionView.dataSource = self
+        temCollectionView.delegate = self
+        return temCollectionView
+    }()
     
     public init() {
         super.init(frame: CGRect.zero)
@@ -119,7 +127,7 @@ public class TabPagerBar: UIView {
     
     /// 配置
     private func config() {
-        self.backgroundColor = UIColor.clear
+        self.backgroundColor = UIColor.white
         self.addFixAutoAdjustInsetScrollView()
         self.addCollectionView()
         self.addUnderLineView()
@@ -145,24 +153,24 @@ public class TabPagerBar: UIView {
     public override func layoutSubviews() {
         super.layoutSubviews()
         
-        self.backgroundView?.frame = self.bounds
-        let frame = self.bounds.inset(by: self.contentInset)
-        let needUpdateLayout = (frame.size.height > 0 && self.collectionView.frame.size.height != frame.size.height) || (frame.size.width > 0 && self.collectionView.frame.size.width != frame.size.width)
-        self.collectionView.frame = frame
-        if self.didLayoutSubViews == false && self.collectionView.frame.isEmpty == false {
-            self.didLayoutSubViews = true
+        backgroundView?.frame = bounds
+        let frame = bounds
+        let needUpdateLayout = (frame.size.height > 0 && collectionView.frame.size.height != frame.size.height) || (frame.size.width > 0 && collectionView.frame.size.width != frame.size.width)
+        collectionView.frame = frame
+        if didLayoutSubViews == false && collectionView.frame.isEmpty == false {
+            didLayoutSubViews = true
         }
         
         if needUpdateLayout {
-            self.layout.invalidateLayout()
+            layout.invalidateLayout()
         }
         
         if frame.size.height > 0 && frame.size.width > 0 {
-            self.layout.adjustContentCellsCenterInBar()
+            layout.adjustContentCellsCenterInBar()
         }
         
-        self.isFirstLayout = false
-        self.layout.layoutSubViews()
+        isFirstLayout = false
+        layout.layoutSubViews()
     }
 }
 
@@ -192,21 +200,6 @@ extension TabPagerBar {
         if self.superview != nil {
             layout.layoutSubViews()
         }
-    }
-    
-    
-    /// 设置背景View
-    ///
-    /// - Parameter backgroundView: <#backgroundView description#>
-    public func setBackgroundView(_ backgroundView: UIView) {
-        
-        if let temBackgroundView = self.backgroundView {
-            temBackgroundView.removeFromSuperview()
-        }
-        
-        self.backgroundView = backgroundView
-        backgroundView.frame = self.bounds
-        self.insertSubview(backgroundView, at: 0)
     }
     
     
@@ -253,7 +246,6 @@ extension TabPagerBar {
         guard let temDataSource = self.dataSource else {
             Swift.fatalError("数据源协议必须实现", file: #file, line: #line)
         }
-        
         
         self.countOfItems = temDataSource.numberOfItemsInPagerTabBar()
         if self.curIndex >= self.countOfItems {
@@ -331,7 +323,10 @@ extension TabPagerBar {
             return CGSize.zero.width
         }
         
-        let frame = (temTitle as NSString).boundingRect(with: CGSize(width: 1000, height: 1000), options: [.usesLineFragmentOrigin, .usesFontLeading, .truncatesLastVisibleLine], attributes: [NSAttributedString.Key.font: self.layout.selectedTextFont], context: nil)
+        let frame = (temTitle as NSString).boundingRect(with: CGSize(width: 1000, height: 1000),
+                                                        options: [.usesLineFragmentOrigin, .usesFontLeading, .truncatesLastVisibleLine],
+                                                        attributes: [NSAttributedString.Key.font: self.layout.selectedTextFont],
+                                                        context: nil)
         return CGSize(width: ceil(frame.width), height: ceil(frame.size.height) + 1).width
     }
     
@@ -417,12 +412,10 @@ extension TabPagerBar: UICollectionViewDataSource {
 }
 
 
-
 // MARK: - UICollectionViewDelegate
 extension TabPagerBar: UICollectionViewDelegate {
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
         self.delegate?.pagerTabBar?(self, didSelectItemAt: indexPath.item)
     }
 }
@@ -433,15 +426,12 @@ extension TabPagerBar: UICollectionViewDelegateFlowLayout {
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        if self.layout.cellWidth > 0 {
-            return CGSize(width: self.layout.cellWidth + self.layout.cellEdging*2, height: self.collectionView.frame.height)
-        } else if self.delegate?.responds(to: #selector(self.delegate?.pagerTabBar(_:widthForItemAt:))) ?? false {
-            let width = self.delegate!.pagerTabBar!(self, widthForItemAt: indexPath.item)
-            return CGSize(width: width, height: self.collectionView.frame.height)
-        } else {
-            Swift.fatalError("请设置Cell宽度", file: #file, line: #line)
+        guard let temDelete = self.delegate else {
+              Swift.fatalError("必须实现计算行宽的委托方法", file: #file, line: #line)
         }
-        return CGSize.zero
+        
+        let width = temDelete.pagerTabBar(self, widthForItemAt: indexPath.item)
+        return CGSize(width: width, height: self.collectionView.frame.height)
     }
 }
 
