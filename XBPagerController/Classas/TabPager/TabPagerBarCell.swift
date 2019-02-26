@@ -58,4 +58,3 @@ public class TabPagerBarCell: TabPagerCellProtocol {
         self.privateLabel.frame = self.bounds
     }
 }
-

@@ -307,6 +307,7 @@ extension TabPagerBarLayout {
         let animateBlock = { () -> Void in
             
             if let temFromCell = fromCell {
+                
                 temFromCell.titleLabel.font = self.normalTextFont
                 temFromCell.titleLabel.textColor = self.normalTextColor
                 temFromCell.transform = CGAffineTransform(scaleX: self.selectFontScale, y: self.selectFontScale)
@@ -423,6 +424,7 @@ extension TabPagerBarLayout {
             
             if fromCellFrame.origin.x < toCellFrame.origin.x {
                 if progress <= 0.5 {
+                    
                     progressX = fromCellFrame.origin.x + progressFromEdging
                     width = (toCellFrame.size.width - progressToEdging + progressFromEdging + cellSpacing) * 2 * progress + fromCellFrame.size.width - 2 * progressFromEdging
                 } else {

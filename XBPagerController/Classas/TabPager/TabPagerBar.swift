@@ -248,10 +248,6 @@ extension TabPagerBar {
         }
         
         self.countOfItems = temDataSource.numberOfItemsInPagerTabBar()
-        if self.curIndex >= self.countOfItems {
-            self.curIndex = self.countOfItems - 1
-        }
-        
         self.delegate?.pagerTabBar?(self, configureLayout: self.layout)
         self.layout.layoutIfNeed()
         self.collectionView.reloadData()
@@ -427,7 +423,7 @@ extension TabPagerBar: UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         guard let temDelete = self.delegate else {
-              Swift.fatalError("必须实现计算行宽的委托方法", file: #file, line: #line)
+            Swift.fatalError("必须实现计算行宽的委托方法", file: #file, line: #line)
         }
         
         let width = temDelete.pagerTabBar(self, widthForItemAt: indexPath.item)
